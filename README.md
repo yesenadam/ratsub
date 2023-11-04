@@ -10,7 +10,7 @@ ghostscript, flex, bison
 
 ## Installation
 
-1. Copy the commands in shell_commands.txt to your .bash_profile in your home folder if using bash, or the equivalent for other shells. Restart the terminal to make the commands functional.
+1. Copy the commands in ratsub_commands.txt to your .bash_profile in your home folder if using bash, or the equivalent for other shells. Restart the terminal to make the commands functional.
 
 2. Copy the subdiv folder to your computer and cd to it. Enter:
 
