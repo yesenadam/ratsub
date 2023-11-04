@@ -1,0 +1,58 @@
+ratsub () {
+if (($# == 3))
+then
+	echo $1 $2 $3
+        for ((a=$2;a<=$3;a++))
+        do 
+        { (echo "levels $a";cat $1.sdv | awk '!/^levels/'; ) | 
+                ./subdiv > $1-$a.eps 2> subdiv.log
+        } || { cat ./subdiv.log; return; }
+        echo "Making $1-$a.png..."
+        gs -q -dNOCCFONTS -dNOFONTMAP -dNOFONTPATH -dNOPLATFONTS -dNONATIVEFONTMAP -dEPSCrop=true -r1440 -sDEVICE=png16m -o$1-$a.png $1-$a.eps
+        done 
+        echo "Done."
+else 
+        if (($# == 2))
+        then
+		echo $1 $2
+        { (echo "levels $2";cat $1.sdv |
+         awk '!/^levels/'; ) | 
+                ./subdiv > $1-$2.eps 2> subdiv.log
+        } || { cat ./subdiv.log; return 2; }
+        echo "Making $1-$2.png..."
+        gs -q -dNOCCFONTS -dNOFONTMAP -dNOFONTPATH -dNOPLATFONTS -dNONATIVEFONTMAP -dEPSCrop=true -r1440 -sDEVICE=png16m -o$1-$2.png $1-$2.eps
+        echo "Done."
+        else return 2;
+        fi
+fi
+}
+
+ratsubhd () {
+echo $*
+if (($# == 3))
+then
+        echo $1 $2 $3
+        for ((a=$2;a<=$3;a++))
+        do 
+        { (echo "levels $a";cat $1.sdv | awk '!/^levels/'; ) | 
+                ./subdiv > $1.eps 2> subdiv.log
+        } || { cat ./subdiv.log; return; }
+        echo "Making $1-${a}hd.png..."
+        gs -q -dNOCCFONTS -dNOFONTMAP -dNOFONTPATH -dNOPLATFONTS -dNONATIVEFONTMAP -dEPSCrop=true -r2880 -sDEVICE=png16m -o$1-${a}hd.png $1.eps 
+        done 
+        echo "Done."
+else 
+        if (($# == 2))
+        then
+                echo $1 $2
+                { (echo "levels $2";cat $1.sdv |
+                         awk '!/^levels/'; ) | 
+                        ./subdiv > $1.eps 2> subdiv.log
+                } || { cat ./subdiv.log; return 2; }
+                echo "Making $1-${2}hd.png..."
+                gs -q -dNOCCFONTS -dNOFONTMAP -dNOFONTPATH -dNOPLATFONTS -dNONATIVEFONTMAP -dEPSCrop=true -r2880 -sDEVICE=png16m -o$1-${2}hd.png $1.eps 
+                echo "Done."
+        else return 2;
+        fi
+fi
+}
