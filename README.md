@@ -57,8 +57,7 @@ See the 3 PDF ebooks for tutorial, language spec, and many example programs and 
 
 ### More info
 
-
-Instead of "make", making with "make debug" produces much more info when ratusb programs are run.
+The subdiv compiler converts Ratsub code to PostScript .eps files.
 
 
 The subdiv compiler is about 99% completed, there are still a few corners of the language spec not totally implemented yet. I rarely run into these when using it.
