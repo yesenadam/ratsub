@@ -10,13 +10,13 @@ ghostscript, flex, bison
 
 ## Installation
 
-1. Copy the commands in ratsub_commands.txt to your .bash_profile in your home folder if using bash, or the equivalent for other shells. Restart the terminal to make the commands functional.
-
-2. Copy the subdiv folder to your computer and cd to it. Enter:
+1. Copy the subdiv folder to your computer and cd to it. Enter:
 
 ```
 make
 ```
+
+2. Copy the commands in ratsub_commands.txt to your .bash_profile in your home folder if using bash, or the equivalent for other shells. Restart the terminal to make the commands functional.
 
 ### On error
 At this point, some combinations of versions of C compiler, flex, and bison, produce an error message "implicit declaration of function 'yylex' is invalid in C99". See discussion [here](https://lists.gnu.org/r/bug-bison/2022-01/msg00002.html).
