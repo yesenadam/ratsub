@@ -57,7 +57,7 @@ See the 3 PDF ebooks for tutorial, language spec, and many example programs and 
 
 ### More info
 
-The subdiv compiler converts Ratsub code to PostScript .eps files.
+The subdiv compiler converts Ratsub code to PostScript .eps files, which ghostscript renders as PNG images.
 
 
 The subdiv compiler is about 99% completed, there are still a few corners of the language spec not totally implemented yet. I rarely run into these when using it.
