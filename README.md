@@ -1,4 +1,4 @@
-# Ratsub
+# Ratsub v1.1
 
 Ratsub is a recursive graphics language for making images - recursive, fractal, IFS, tilings, reptiles, Bezier curves, plane-filling curves etc - easily, with very short programs.
 
