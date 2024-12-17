@@ -4,12 +4,13 @@
 %{ 
 # include "subdiv.tab.h" 
 #define YY_NO_UNPUT
+#define YY_NO_INPUT
 
 #include <stdio.h>
 #include <string.h>
 
 int yylex(void);
-int yyerror(char *s);
+void yyerror(char *s);
 //int yylineno = 0; //error message made me comment this out sept 2021
 int points=0;
 #define MAXNUMPTS 50 //why these here?!
@@ -78,3 +79,9 @@ float y;
 .           	{ yyerror("SCANNER ERROR");	}
 %% 
 
+void yyerror(char* s) {  // -1 because the levels line is not present in user's text file!
+    extern int yylineno;	// defined and maintained in lex.c
+//    extern char *yytext;	// defined and maintained in lex.c
+    fprintf (stderr,"ERROR on line %d: %s\n",yylineno-1,s);
+    exit(1);
+}

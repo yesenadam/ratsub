@@ -23,8 +23,8 @@
 #define EQUALS 1
 #define GREATERTHAN 2
 
-
-//void yyerror(const char *);
+int yylex(void);
+void yyerror(char *s)__attribute__ ((noreturn));
 
 short ColNumber(char* cnamestr);
 short GetShapeNum(char name[50]);
@@ -56,7 +56,7 @@ void SetPboxPoints(float x1, float y1, float x2, float y2);
 void SetShadingCol(int cpn, float r,float g,float b);
 void SetShapeCallCol(float r,float g,float b);
 void SetShapeCol(float r,float g,float b);
-int yyerror(char *s) __attribute__ ((noreturn));
+//int yyerror(char *s) __attribute__ ((noreturn));
 
 struct {
     float x;
@@ -840,7 +840,7 @@ int main(int argc, char **argv)
 { 
 //** to debug, uncomment this and make with "bison -d subdiv.y --debug" instead of
 //** the usual "bison -d subdiv.y" in the Makefile  (now can use "make debug"):
-//  yydebug=1; 
+ // yydebug=1; 
 
 //printf("%d HELLOOOOOOOOOO\n",argc);
     float minx,maxx,miny,maxy;
@@ -995,12 +995,12 @@ int main(int argc, char **argv)
     return 0;
 } //main
 
-int yyerror(char* s) {
+/*void yyerror(char* s) {  // -1 because the levels line is not present in user's text file!
     extern int yylineno;	// defined and maintained in lex.c
 //    extern char *yytext;	// defined and maintained in lex.c
-    fprintf (stderr,"ERROR on line %d: %s\n",yylineno,s);
+    fprintf (stderr,"ERROR on line %d: %s\n",yylineno-1,s);
     exit(1);
-}
+}*/
 
 void PrintDrawShape() {
     printf("\n/draw { %% ( colR colG colB [pts] -- )\n");
