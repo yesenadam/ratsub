@@ -56,7 +56,6 @@ void SetPboxPoints(float x1, float y1, float x2, float y2);
 void SetShadingCol(int cpn, float r,float g,float b);
 void SetShapeCallCol(float r,float g,float b);
 void SetShapeCol(float r,float g,float b);
-//int yyerror(char *s) __attribute__ ((noreturn));
 
 struct {
     float x;
@@ -194,7 +193,9 @@ sdvprogram: level settings optpointdefs defs
 ;
 level: LEVELS NUM EOL { maxLevel=$2; }
 ;
+
 //======================================== SETTINGS ==================================
+
 settings: | settings setting
 ; //settings are optional
 setting: srandset | widthset | marginset | noedgesset | boxcolourset | onlyedgesset | gridset
@@ -242,7 +243,9 @@ onlyedgesset: ONLYEDGES EOL { OnlyEdgesIsSet=1;}
 gridset: GRID NUM EOL { GridIsSet=1;
     gridTheta=$2;    }
 ;
+
 //======================================= POINTDEFS ===================================
+
 optpointdefs: {// if no init pts defined, defaults to "pbox", i.e. to pbox 0 0 100 100
     SetPboxPoints(0,0,100,100);
 } | pointdefs
@@ -325,12 +328,13 @@ cubedef: PCUBE NUM NUM NUM NUM NUM NUM EOL {//cube 50 15 -5 0 -1000 -500
 pgondef: PGON NUM NUM NUM EOL {//pgon 5 50 0 : num of sides, radius, angular location of p0.
     for (i=0;i<$2;i++)
         SetInitPt($3*cos(2*PI*($4/360+i/$2)),$3*sin(2*PI*($4/360+i/$2)));
-} | PGON NUM NUM EOL {//pgon 5 50 : num of sides, radius. p0 is at 0 degrees.
+} | PGON NUM NUM EOL {//pgon 5 50. if angle (of p0) is omitted, angle=0.
     for (i=0;i<$2;i++)
         SetInitPt($3*cos(2*PI*(i/$2)),$3*sin(2*PI*(i/$2)));
 };
 
 //=========================================== SHAPE DEFS =================================
+
 defs: namedef | defs namedef 
 ;
 namedef: defline optionals draworshapesets 
@@ -353,7 +357,9 @@ defline: DEF WORD NUM EOL {
     P=&Ss->NewPt[np]; //i.e. P is the current new point in the current shape being parsed
     turnDirection=0;
 };
+
 //========================================== SHAPE OPTIONAL SETTINGS ========================
+
 optionals: | optionals option
 ;
 option: gradientline | shadingline | colourline | pointset// | turnpointset
@@ -418,7 +424,9 @@ colourname2: WORD {cnamestr2=$1;} //for the second colourname on a line, used in
         strcat(cnamestr2," ");
         strcat(cnamestr2,$2);
 };
+
 //================================= NEW SHAPE POINTS ==================================================
+
 pointset:  singlepoint | multiplepoints
 ;
 singlepoint: plainfract maybeturn EOL
@@ -488,7 +496,9 @@ plainfract: POINTNUM POINTNUM NUM DIV NUM POINTNUM { // p3 p1 1/2 p2
     P->denom=$5;
     IncPointVars();
 };
+
 //============================== ADDING MULTIPLE POINTS =========================
+
 mayberangeendpoint: DOTS | DOTNUM { //.. or ..0 at end of  e.g. p4..7 p0.. .5 p1..0 <--
     Ss->NewPt[np-1].To=$1;
 };
@@ -628,19 +638,17 @@ cnumer: COMMANUM {
     numer[n]=$1;
     n++;
 };
+
 //============================================ SHAPE CALLS ========================================
-draworshapesets: | shapesets //| {Ss->DrawNow=1; }
-//| shapesets //| draw
+
+draworshapesets: | shapesets 
 ;
-//draw: DRAW EOL { Ss->DrawNow=1; } // draw
-//;
 shapesets: shapeset | shapesets shapeset
 ;
 shapeset: WORD verts colourset optflip optwait EOL { //sq p0,4,2,5 red
     if (waitnum==0) {
         strcpy(Ss->ShapeCall[nss].name,$1);
-//        printf("%d %d %s %s %d\n",s,nss,$1,"draw",strcmp($1,"draw"));
-        if (strcmp($1,"draw")==0) {
+        if (strcmp($1,"draw")==0) { //hacky
             DrawIsUsed=YES;
             Ss->ShapeCall[nss].IsDrawCall=YES;
         }
@@ -655,9 +663,7 @@ shapeset: WORD verts colourset optflip optwait EOL { //sq p0,4,2,5 red
     nss++;
     nssp=0;//reset for next shape
     waitnum=0; //reset for next shape
-} //"draw" EOL { printf("DRAW\n");
-//} 
-| GT NUM EOL { //branching, e.g. >3, >-3
+} | GT NUM EOL { //branching, e.g. >3, >-3
     Ss->BranchingIsUsed=GREATERTHAN;
     Ss->firstBranchedSCall=nss;
     Ss->branchLevel=$2;
@@ -752,7 +758,9 @@ cvertex: COMMANUM {
     IncShapePointVars();
 };
 %% 
+
 //======================================== MAIN ===================================
+
 bool IsOnFlipList(char sh[50]){
     OnList=NO;
     for (k=0;k<numOfShapesToFlip;k++) {
@@ -842,7 +850,6 @@ int main(int argc, char **argv)
 //** the usual "bison -d subdiv.y" in the Makefile  (now can use "make debug"):
  // yydebug=1; 
 
-//printf("%d HELLOOOOOOOOOO\n",argc);
     float minx,maxx,miny,maxy;
     SetColNames();
     yyparse(); 
@@ -995,13 +1002,6 @@ int main(int argc, char **argv)
     return 0;
 } //main
 
-/*void yyerror(char* s) {  // -1 because the levels line is not present in user's text file!
-    extern int yylineno;	// defined and maintained in lex.c
-//    extern char *yytext;	// defined and maintained in lex.c
-    fprintf (stderr,"ERROR on line %d: %s\n",yylineno-1,s);
-    exit(1);
-}*/
-
 void PrintDrawShape() {
     printf("\n/draw { %% ( colR colG colB [pts] -- )\n");
     printf("    /pts exch def\n" "    /colB exch def\n");
@@ -1101,17 +1101,8 @@ void PrintShapeCall(short j) {
     printf("        %%stack for ");
     printf(SC->IsDrawCall ? "%s\n" : "subdiv-%s\n",SC->name); //i.e. "draw"
     if (Si->IsWaitShape)    printf("        colR colG colB \n");
-    //if draw call, use SC colour, or shape colour, or param colour.
-//    if (Si->RandRangeIsUsed) {
-  //  }
-    /*else if (SC->IsDrawCall) {*/
-/*            if (SC->ColIsSet) printf("%g %g %g\n",SC->col[0],SC->col[1],SC->col[2]);*/
-/*            else if (Si->ColIsRand) printf("randR randG randB\n");*/
-/*            else if (Si->ColIsSet) printf("%g %g %g\n",Si->col[0],Si->col[1],Si->col[2]);*/
-/*            else printf(" colR colG colB\n");*/
-/*    } */
-/*    */
-    else if (SC->ColourAddIsUsed) printf(" colR %g add colG %g add colB %g add \n",SC->col[0],SC->col[1],SC->col[2]);
+    else if (SC->ColourAddIsUsed) 
+        printf(" colR %g add colG %g add colB %g add \n",SC->col[0],SC->col[1],SC->col[2]);
     else if (SC->ColIsRand) printf("rand 2147483647.0 div rand 2147483647.0 div rand 2147483647.0 div \n");
     else if (SC->ColIsSet) printf("%g %g %g \n",SC->col[0],SC->col[1],SC->col[2]);
     else if (SC->NotIsUsed) printf(" 1 colR sub 1 colG sub 1 colB sub\n");
@@ -1209,8 +1200,6 @@ void PrintShapeProcedure(short i){
         printf("/randR rand 2147483647.0 div %g %g sub mul %g add def\n",Si->randRange[0].max,Si->randRange[0].min,Si->randRange[0].min);
         printf("/randG rand 2147483647.0 div %g %g sub mul %g add def\n",Si->randRange[1].max,Si->randRange[1].min,Si->randRange[1].min);
         printf("/randB rand 2147483647.0 div %g %g sub mul %g add def\n",Si->randRange[2].max,Si->randRange[2].min,Si->randRange[2].min);
-//        printf("/randG rand 2147483647.0 div def\n");
-  //      printf("/randB rand 2147483647.0 div def\n");
     } else if (Si->ColIsRand) {//need colour to pass, different each time through function.
         printf("/randR rand 2147483647.0 div def\n");
         printf("/randG rand 2147483647.0 div def\n");
